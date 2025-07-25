@@ -1,5 +1,7 @@
 const connection = require("../db/db");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const getUser = (req, res) => {
   const token = req.cookies?.accessToken;
@@ -41,4 +43,25 @@ const updateUser = (req, res) => {
   });
 };
 
-module.exports = { updateUser, getUser };
+const updatePassword = (req, res) => {
+  const token = req.cookies?.accessToken;
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Token is invalid" });
+    }
+    const userid = decoded.id;
+    const { password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const query = `UPDATE users SET password = ? WHERE id = ?`;
+    const values = [hashedPassword, userid];
+    connection.query(query, values, (err, result) => {
+      if (err) throw err;
+      res.status(200).json({ message: "Password updated successfully" });
+    });
+  });
+};
+
+module.exports = { updateUser, getUser, updatePassword };
