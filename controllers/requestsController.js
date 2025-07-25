@@ -11,14 +11,14 @@ const getUserRequests = (req, res) => {
       return res.status(401).json({ message: "Token is invalid" });
     }
     const userid = decoded.id;
-    connection.query("SELECT r.*,u.name,u.lastname FROM requests r INNER JOIN users u ON r.id_user = u.id WHERE id_user = ?", [userid], (err, results) => {
+    connection.query("SELECT r.*,u.name,u.lastname FROM requests r INNER JOIN users u ON r.id_user = u.id WHERE id_user = ? ORDER BY r.created_at DESC", [userid], (err, results) => {
       if (err) {
         return res.status(500).json({ message: "Errore nel recupero delle richieste" });
       }
       const requests = results.map((request) => {
         return {
           ...request,
-          date: new Date(request.date).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
+          date: new Date(request.date).toLocaleDateString("sv-SE", { timeZone: "Europe/Rome" }),
           created_at: new Date(request.created_at).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
           update_at: new Date(request.update_at).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
         };
@@ -40,14 +40,14 @@ const getCrewRequests = (req, res) => {
     const userid = decoded.id;
     const role = decoded.role;
     if (role === "manager" || role === "director") {
-      connection.query(`SELECT r.*,u.name,u.lastname FROM requests r INNER JOIN users u ON r.id_user = u.id WHERE u.role = "crew"`, (err, results) => {
+      connection.query(`SELECT r.*,u.name,u.lastname FROM requests r INNER JOIN users u ON r.id_user = u.id WHERE u.role = "crew" ORDER BY r.created_at DESC`, (err, results) => {
         if (err) {
           res.status(500).json({ message: "Errore nel recupero delle richieste" });
         } else {
           const requests = results.map((request) => {
             return {
               ...request,
-              date: new Date(request.date).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
+              date: new Date(request.date).toLocaleDateString("sv-SE", { timeZone: "Europe/Rome" }),
               created_at: new Date(request.created_at).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
               update_at: new Date(request.update_at).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
             };
@@ -73,14 +73,14 @@ const getManagerRequests = (req, res) => {
     const userid = decoded.id;
     const role = decoded.role;
     if (role === "director") {
-      connection.query("SELECT r.*,u.name,u.lastname FROM requests r INNER JOIN users u ON r.id_user = u.id WHERE u.role = 'manager'", (err, results) => {
+      connection.query("SELECT r.*,u.name,u.lastname FROM requests r INNER JOIN users u ON r.id_user = u.id WHERE u.role = 'manager' ORDER BY r.created_at DESC", (err, results) => {
         if (err) {
           res.status(500).json({ message: "Errore nel recupero delle richieste" });
         } else {
           const requests = results.map((request) => {
             return {
               ...request,
-              date: new Date(request.date).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
+              date: new Date(request.date).toLocaleDateString("sv-SE", { timeZone: "Europe/Rome" }),
               created_at: new Date(request.created_at).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
               update_at: new Date(request.update_at).toLocaleDateString("it-IT", { timeZone: "Europe/Rome" }),
             };

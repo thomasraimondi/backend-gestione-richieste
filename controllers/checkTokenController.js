@@ -8,6 +8,11 @@ const checkToken = (req, res) => {
   }
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) {
+      res.cookie("accessToken", "", {
+        httpOnly: true,
+        expires: new Date(0),
+        path: "/",
+      });
       return res.status(401).json({ message: "Token is invalid", error: err });
     }
     const user = {

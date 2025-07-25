@@ -10,6 +10,7 @@ const logoutRouter = require("./routers/logoutRouter");
 const profileRouter = require("./routers/profileRouter");
 const { notFount, errorHandler } = require("./middleware/errorHandler");
 const requestsRouter = require("./routers/requestsRouter");
+const usersRouter = require("./routers/usersRouter");
 
 const corsOptions = {
   origin: "http://localhost:5173",
@@ -26,6 +27,7 @@ app.use("/check-token", checkTokenRouter);
 app.use("/logout", logoutRouter);
 app.use("/profile", profileRouter);
 app.use("/requests", requestsRouter);
+app.use("/users", usersRouter);
 
 app.use(notFount);
 app.use(errorHandler);
